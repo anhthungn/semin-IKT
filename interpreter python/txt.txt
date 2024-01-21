@@ -1,0 +1,6 @@
+OmenScript > a=10
+OmenScript: a=10
+OmenScript > b=15
+OmenScript: b=15
+OmenScript > c=a+b
+OmenScript: c=25
