@@ -23,7 +23,16 @@ def run_game():
 
     # Create hearts
     heart1 = Bonuses(heart_size, heart_img)
+
+    # Initialize life counter
     life_counter = LifeCounter(heart_img, 3)
+
+    # Font settings for score counter
+    font = pygame.font.Font(None, 36)
+    text_color = (255, 255, 255)
+
+    # Initialize score counter
+    score = 0
 
     # main game loop
     running = True
@@ -44,13 +53,19 @@ def run_game():
         for coin in coins:
             coin.draw(screen)
 
-        # Draw coins
-        for coin in coins:
-            coin.draw(screen)
-
         # Draw hearts
         heart1.draw(screen)
-        life_counter.draw(screen)
+
+        # Draw life counter label
+        life_text = font.render("Life:", True, text_color)
+        screen.blit(life_text, (20, 20))
+
+        # Draw life hearts
+        life_counter.draw(screen, (20 + life_text.get_width() + 10, 20))
+
+        # Draw score counter
+        score_text = font.render("Score: " + str(score), True, text_color)
+        screen.blit(score_text, (sw - score_text.get_width() - 20, 20))
 
         pygame.display.flip() # update the display
 
