@@ -137,11 +137,10 @@ class LifeCounter:
         self.num_lives = num_lives
         self.rect = self.image.get_rect()
 
-    def draw(self, screen):
+    def draw(self, screen, position):
+        x, y = position
         for i in range(self.num_lives):
-            screen.blit(self.image, (20 + i * (self.rect.width + 5), 20))
+            screen.blit(self.image, (x + i * (self.rect.width + 5), y))
 
-
-    
 
     
