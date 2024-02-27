@@ -7,25 +7,29 @@ def run_game():
 
     clock = pygame.time.Clock()
 
-    spaceship = Spaceship(spaceship_size, 3, (1, 0), (sw // 2, sh // 2), 3)
+    spaceship_hp = 3
+    spaceship = Spaceship(spaceship_size, 3, (1, 0), (sw // 2, sh // 2), spaceship_hp)
 
     # Create asteroids
     asteroids = []
-    asteroid_counts = [4, 4, 3]  # Distribute the count of asteroids for each type
+    asteroid_counts = [4, 5, 3]  # Distribute the count of asteroids for each type
 
     for count, img, size in zip(asteroid_counts, [asteroid1_img, asteroid2_img, asteroid3_img], [asteroid1_size, asteroid2_size, asteroid3_size]):
         for _ in range(count):
             asteroids.append(Asteroids(img, size))
-    
+
     # create coins
     num_coins = 3
     coins = [Bonuses(coin_size, coin_img) for _ in range(num_coins)]
 
     # Create hearts
-    heart1 = Bonuses(heart_size, heart_img)
+    heart1 = Bonuses(heart1_size, heart1_img)
 
-    # Initialize life counter
-    life_counter = LifeCounter(heart_img, 3)
+    diamond = Bonuses(diamond_size, diamond_img)
+
+    # Font settings for life counter
+    font = pygame.font.Font(None, 36)
+    text_color = (255, 255, 255)
 
     # Font settings for score counter
     font = pygame.font.Font(None, 36)
@@ -40,28 +44,30 @@ def run_game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-    
+
         # draw everything
         screen.blit(bg, (0, 0))
+
         spaceship.draw(screen)
         spaceship.motion()
 
         for asteroid in asteroids:
             asteroid.motion()
             asteroid.draw(screen)
+            spaceship.collision_detection(asteroid)
 
         for coin in coins:
             coin.draw(screen)
 
-        # Draw hearts
         heart1.draw(screen)
+        diamond.draw(screen)
 
         # Draw life counter label
         life_text = font.render("Life:", True, text_color)
-        screen.blit(life_text, (20, 20))
+        screen.blit(life_text, (20, 23))
 
-        # Draw life hearts
-        life_counter.draw(screen, (20 + life_text.get_width() + 10, 20))
+        for i in range(spaceship_hp):
+            screen.blit(heart2_img, (20 + life_text.get_width() + 10 + i * (heart2_img.get_width() + 5), 20))
 
         # Draw score counter
         score_text = font.render("Score: " + str(score), True, text_color)
