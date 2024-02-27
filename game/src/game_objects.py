@@ -9,8 +9,8 @@ class Spaceship:
         self._speed = speed
         self._direction = direction
         self._position = position
-        self._max_hp = hp
-        self._current_hp = hp
+        self.max_hp = hp
+        self.current_hp = hp
         self._score = 0
 
         # load spaceship image
@@ -29,10 +29,6 @@ class Spaceship:
         self.cosine = math.cos(math.radians(self.angle + 90))
         self.sine = math.sin(math.radians(self.angle + 90))
         self.head = (self.x + self.cosine * self.w//2, self.y - self.sine * self.h//2)
-
-        # Life counter
-        self.font = pygame.font.Font(None, 36)  # Font for displaying text
-        self.life_text = self.font.render('Life: ' + str(self._current_hp), True, (255, 255, 255))  # Initial life text
 
     def motion(self):
         keys = pygame.key.get_pressed()
@@ -68,15 +64,21 @@ class Spaceship:
     def return_score(self):
         return self._score
     
-    def score_increase():
-        pass
+    def score_increase(self, value):
+        self._score += value
     
     def life_deduction(self):
-        pass
+        self.current_hp -= 1
 
-    def collision_detection():
-        pass
-
+    def collision_detection(self, obj):
+        if isinstance(obj, Asteroids):
+            asteroid_rect = pygame.Rect(obj.x, obj.y, obj.width, obj.height)
+            if self.rotatedRect.colliderect(asteroid_rect):
+                self.life_deduction()
+        elif isinstance(obj, Bonuses):
+            if self.rotatedRect.colliderect(obj):
+                self.score_increase()
+    
     def end_game():
         pass
 
@@ -113,7 +115,6 @@ class Asteroids:
 class Bonuses:
     def __init__(self, size, img):
         self._size = size
-        #self._position = position
         self._img = img
         self.width, self.height = self._img.get_size()
         self.x = random.randint(0, sw - self.width)
@@ -128,19 +129,9 @@ class Coin(Bonuses):
         self._value = value
 
 class Heart(Bonuses):
-    def __init__(self, size, position, value):
-        super().__init__(size, position, value)
+    def __init__(self, size, img):
+        super().__init__(size, img)
 
-class LifeCounter:
-    def __init__(self, image, num_lives):
-        self.image = image
-        self.num_lives = num_lives
-        self.rect = self.image.get_rect()
-
-    def draw(self, screen, position):
-        x, y = position
-        for i in range(self.num_lives):
-            screen.blit(self.image, (x + i * (self.rect.width + 5), y))
-
-
-    
+class Diamond(Bonuses):
+    def __init__(self, size, img):
+        super().__init__(size, img)
