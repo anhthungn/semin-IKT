@@ -9,7 +9,6 @@ class Spaceship:
         self._speed = speed
         self._direction = direction
         self._position = position
-        self.max_hp = hp
         self.current_hp = hp
         self._score = 0
 
@@ -89,7 +88,7 @@ class Asteroids:
         self.width, self.height = self.size
         self.x = random.randint(0, sw - self.width)  # Random initial x position within screen width
         self.y = random.randint(0, sh - self.height)  # Random initial y position within screen height
-        self.speed = random.randint(1, 2)  # Random speed
+        self.speed = 1  # Random speed
         self.direction = random.randint(0, 360)  # Random initial direction
 
     def motion(self):
