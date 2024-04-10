@@ -5,14 +5,14 @@ from settings import *
 def run_game():
     pygame.init()
 
-    clock = pygame.time.Clock()
+    # clock = pygame.time.Clock()
 
-    spaceship_hp = 3
-    spaceship = Spaceship(spaceship_size, 3, (1, 0), (sw // 2, sh // 2), spaceship_hp)
+    # spaceship_hp = 3
+    spaceship = Spaceship(spaceship_size, 1.5, (1, 0), (sw // 2, sh // 2), 3)
 
     # Create asteroids
     asteroids = []
-    asteroid_counts = [4, 5, 3]  # Distribute the count of asteroids for each type
+    asteroid_counts = [3, 2, 3]  # Distribute the count of asteroids for each type
 
     for count, img, size in zip(asteroid_counts, [asteroid1_img, asteroid2_img, asteroid3_img], [asteroid1_size, asteroid2_size, asteroid3_size]):
         for _ in range(count):
@@ -25,6 +25,7 @@ def run_game():
     # Create hearts
     heart1 = Bonuses(heart1_size, heart1_img)
 
+    # create diamons
     diamond = Bonuses(diamond_size, diamond_img)
 
     # Font settings for life counter
@@ -66,7 +67,7 @@ def run_game():
         life_text = font.render("Life:", True, text_color)
         screen.blit(life_text, (20, 23))
 
-        for i in range(spaceship_hp):
+        for i in range(spaceship.current_hp):
             screen.blit(heart2_img, (20 + life_text.get_width() + 10 + i * (heart2_img.get_width() + 5), 20))
 
         # Draw score counter
@@ -75,7 +76,7 @@ def run_game():
 
         pygame.display.flip() # update the display
 
-        # Cap the frame rate
-        clock.tick(FPS)
+        # # Cap the frame rate
+        # clock.tick(FPS)
 
     pygame.quit()
