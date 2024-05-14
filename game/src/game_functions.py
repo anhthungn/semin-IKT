@@ -2,17 +2,17 @@ import pygame
 from game_objects import *
 from settings import *
 
-def run_game():
+def initialize_game():
     pygame.init()
 
-    # clock = pygame.time.Clock()
+    clock = pygame.time.Clock()
 
-    # spaceship_hp = 3
-    spaceship = Spaceship(spaceship_size, 1.5, (1, 0), (sw // 2, sh // 2), 3)
+    spaceship_hp = 10
+    spaceship = Spaceship(spaceship_size, 4, (1, 0), (sw // 2, sh // 2), spaceship_hp)
 
     # Create asteroids
     asteroids = []
-    asteroid_counts = [3, 2, 3]  # Distribute the count of asteroids for each type
+    asteroid_counts = [2, 3, 3]  # Distribute the count of asteroids for each type
 
     for count, img, size in zip(asteroid_counts, [asteroid1_img, asteroid2_img, asteroid3_img], [asteroid1_size, asteroid2_size, asteroid3_size]):
         for _ in range(count):
@@ -23,11 +23,30 @@ def run_game():
     coins = [Bonuses(coin_size, coin_img) for _ in range(num_coins)]
 
     # Create hearts
-    heart1 = Bonuses(heart1_size, heart1_img)
+    #heart1 = Bonuses(heart1_size, heart1_img)
 
-    # create diamons
-    diamond = Bonuses(diamond_size, diamond_img)
+    #diamond = Bonuses(diamond_size, diamond_img)
 
+    return clock, spaceship, asteroids, coins
+
+def draw_objects(screen, spaceship, asteroids, coins):
+    spaceship.draw(screen)
+    spaceship.motion()
+
+    for asteroid in asteroids:
+        asteroid.motion()
+        asteroid.draw(screen)
+        spaceship.collision_detection(asteroid)
+
+    for coin in coins:
+        coin.draw(screen)
+        if spaceship.collision_detection(coin):  # If collision with coin occurs
+            coins.remove(coin)  # Remove the coin from the list of coins
+
+    #heart1.draw(screen)
+    #diamond.draw(screen)
+
+def update_scores(screen, spaceship):
     # Font settings for life counter
     font = pygame.font.Font(None, 36)
     text_color = (255, 255, 255)
@@ -36,47 +55,32 @@ def run_game():
     font = pygame.font.Font(None, 36)
     text_color = (255, 255, 255)
 
-    # Initialize score counter
-    score = 0
+    # Draw life counter label
+    life_text = font.render("Life:", True, text_color)
+    screen.blit(life_text, (20, 23))
 
-    # main game loop
-    running = True
-    while running:
+    for i in range(spaceship._current_hp):
+        screen.blit(heart2_img, (20 + life_text.get_width() + 10 + i * (heart2_img.get_width() + 5), 20))
+
+    # Draw score counter
+    score_text = font.render("Score: " + str(spaceship._score), True, text_color)
+    screen.blit(score_text, (sw - score_text.get_width() - 20, 20))
+
+def run_game():
+    clock, spaceship, asteroids, coins = initialize_game()
+
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                return
 
-        # draw everything
         screen.blit(bg, (0, 0))
 
-        spaceship.draw(screen)
-        spaceship.motion()
+        draw_objects(screen, spaceship, asteroids, coins)
 
-        for asteroid in asteroids:
-            asteroid.motion()
-            asteroid.draw(screen)
-            spaceship.collision_detection(asteroid)
+        update_scores(screen, spaceship)
 
-        for coin in coins:
-            coin.draw(screen)
+        pygame.display.flip()  # update the display
 
-        heart1.draw(screen)
-        diamond.draw(screen)
-
-        # Draw life counter label
-        life_text = font.render("Life:", True, text_color)
-        screen.blit(life_text, (20, 23))
-
-        for i in range(spaceship.current_hp):
-            screen.blit(heart2_img, (20 + life_text.get_width() + 10 + i * (heart2_img.get_width() + 5), 20))
-
-        # Draw score counter
-        score_text = font.render("Score: " + str(score), True, text_color)
-        screen.blit(score_text, (sw - score_text.get_width() - 20, 20))
-
-        pygame.display.flip() # update the display
-
-        # # Cap the frame rate
-        # clock.tick(FPS)
-
-    pygame.quit()
+        clock.tick(FPS)
