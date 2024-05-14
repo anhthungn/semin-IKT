@@ -9,7 +9,8 @@ class Spaceship:
         self._speed = speed
         self._direction = direction
         self._position = position
-        self.current_hp = hp
+        self._max_hp = hp
+        self._current_hp = hp
         self._score = 0
 
         # load spaceship image
@@ -28,6 +29,7 @@ class Spaceship:
         self.cosine = math.cos(math.radians(self.angle + 90))
         self.sine = math.sin(math.radians(self.angle + 90))
         self.head = (self.x + self.cosine * self.w//2, self.y - self.sine * self.h//2)
+        self.is_colliding = False 
 
     def motion(self):
         keys = pygame.key.get_pressed()
@@ -67,16 +69,25 @@ class Spaceship:
         self._score += value
     
     def life_deduction(self):
-        self.current_hp -= 1
+        self._current_hp -= 1
 
     def collision_detection(self, obj):
         if isinstance(obj, Asteroids):
             asteroid_rect = pygame.Rect(obj.x, obj.y, obj.width, obj.height)
             if self.rotatedRect.colliderect(asteroid_rect):
                 self.life_deduction()
+                if not self.is_colliding:  # Check if not already colliding
+                    self.life_deduction()
+                    self.is_colliding = True
+            else:
+                self.is_colliding = False  # Reset flag when no longer colliding
         elif isinstance(obj, Bonuses):
-            if self.rotatedRect.colliderect(obj):
-                self.score_increase()
+            obj_rect = obj._img.get_rect(topleft=(obj.x, obj.y))  # Get rect of bonus object
+            if self.rotatedRect.colliderect(obj_rect):                
+                if isinstance(obj, Coin):  # Check if the object is a Coin
+                    return True  # Return True if collision with a coin occurs
+                self.score_increase(50)  # Increase score for other bonuses
+        return False  # Return False if no collision occurs
     
     def end_game():
         pass
@@ -88,7 +99,7 @@ class Asteroids:
         self.width, self.height = self.size
         self.x = random.randint(0, sw - self.width)  # Random initial x position within screen width
         self.y = random.randint(0, sh - self.height)  # Random initial y position within screen height
-        self.speed = 1  # Random speed
+        self.speed = random.randint(1, 2)  # Random speed
         self.direction = random.randint(0, 360)  # Random initial direction
 
     def motion(self):
@@ -123,14 +134,13 @@ class Bonuses:
         screen.blit(self._img, (self.x, self.y))
 
 class Coin(Bonuses):
-    def __init__(self, size, img, value):
-        super().__init__(size, img, value)
-        self._value = value
+    def __init__(self, size, img):
+        super().__init__(size, img)
 
 class Heart(Bonuses):
     def __init__(self, size, img):
         super().__init__(size, img)
-
+    
 class Diamond(Bonuses):
     def __init__(self, size, img):
         super().__init__(size, img)
