@@ -18,7 +18,7 @@
 ### Installation
 1. Clone this repository to your local machine:
     ```sh
-    'git clone https://github.com/anhthungn/semin-IKT/tree/main/game'
+    git clone 'https://github.com/anhthungn/semin-IKT/tree/main/game'
     ```
 
 2. Install the required libraries:
