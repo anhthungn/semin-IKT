@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import sys
 
 def minimal_time(num_of_cards, cutting_time, scissors_time, scissors_num): # N X Y K
