@@ -5,12 +5,12 @@ def minimal_time(num_of_cards, cutting_time, scissors_time, scissors_num): # N X
     # time using only the cutter
     cutter_time = num_of_cards * cutting_time # N * X
 
-    # Time using scissors for as much paper as possible, and a cutter for the rest
+    # time using scissors for as much paper as possible, and a cutter for the rest
     scissors_batches = num_of_cards // scissors_num
-    remaining_cards = num_of_cards % scissors_num  # Remaining papers to cut individually
+    remaining_cards = num_of_cards % scissors_num  # remaining papers to cut individually
     scissors_time_total = scissors_batches * scissors_time + remaining_cards * cutting_time
 
-    # Return the minimal time
+    # return the minimal time
     return min(cutter_time, scissors_time_total)
 
 def read_input(input, output):
