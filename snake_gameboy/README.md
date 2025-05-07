@@ -31,5 +31,5 @@ Kód je optimalizován pro běh v reálném čase, využívá stavový automat p
 ## Autor
 
 Nguyenová Anh Thu  
-Střední škola _[Gymnázium Písnická]_  
+Střední škola _Gymnázium, Praha 4, Písnická 760_  
 Rok: 2025
